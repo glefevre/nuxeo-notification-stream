@@ -5,7 +5,7 @@ build:
     envTemplate:
       template: "{{.DOCKER_REGISTRY}}/glefevre/nuxeo-notification-stream:{{.VERSION}}"
   artifacts:
-  - imageName: changeme
+  - imageName: nuxeo-notification-stream-with-jx
     workspace: .
     docker: {}
   local: {}
