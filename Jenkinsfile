@@ -4,7 +4,7 @@ pipeline {
   }
   environment {
     ORG = 'glefevre'
-    APP_NAME = 'nuxeo-notification-stream'
+    APP_NAME = 'test-notification'
     CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
   }
   stages {
@@ -13,7 +13,7 @@ pipeline {
         branch 'feature-*'
       }
       environment {
-        PREVIEW_VERSION = "0.0.0-SNAPSHOT-$BRANCH_NAME-$BUILD_NUMBER"
+        PREVIEW_VERSION = "0.0.0-SNAPSHOT-$BUILD_NUMBER"
         PREVIEW_NAMESPACE = "$APP_NAME-$BRANCH_NAME".toLowerCase()
         HELM_RELEASE = "$PREVIEW_NAMESPACE".toLowerCase()
       }

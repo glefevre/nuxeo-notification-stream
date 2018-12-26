@@ -38,6 +38,11 @@ spec:
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
-        resources:
-{{ toYaml .Values.resources | indent 12 }}
+        volumeMounts:
+          - name: nuxeoconf
+            mountPath: /docker-entrypoint-initnuxeo.d/
+      volumes:
+        - name: nuxeoconf
+          configMap:
+            name: {{ template "fullname" . }}-conf
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
