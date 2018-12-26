@@ -4,7 +4,7 @@ pipeline {
   }
   environment {
     ORG = 'glefevre'
-    APP_NAME = 'test-notification'
+    APP_NAME = 'nuxeo-notification-stream'
     CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
   }
   stages {

@@ -1,9 +1,9 @@
 dependencies:
 - alias: mongodb
-  version: 4.0.3
+  version: 5.0.0
   repository: https://kubernetes-charts.storage.googleapis.com/
   name: mongodb
 - alias: elasticsearch
-  version: 1.15.0
+  version: 1.15.1
   repository: https://kubernetes-charts.storage.googleapis.com/
-  nuxeo: elasticsearch
+  name: elasticsearch
