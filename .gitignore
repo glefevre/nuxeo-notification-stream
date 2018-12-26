@@ -28,3 +28,5 @@ instance.clid
 nashorn_code_cache/
 tmp
 .zapierapprc
+*.lock
+charts/
