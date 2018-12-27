@@ -9,9 +9,11 @@ image:
 nuxeo:
   mongodb:
     dbname: nuxeo
+    deploy: true
   elasticsearch:
     clusterName: elasticsearch
     indexName: nuxeo
+    deploy: true
   custom_params: |-
     ## add any other params that go into nuxeo.conf
 replicaCount: 1
