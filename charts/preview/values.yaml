@@ -14,14 +14,14 @@ cleanup:
     helm.sh/hook: pre-delete
     helm.sh/hook-delete-policy: hook-succeeded
 
-nuxeo:
-  mongodb:
-    deploy: false
-  elasticsearch:
-    deploy: false
-
+# Override the values from the preview requirement
 preview:
   image:
     repository:
     tag:
     pullPolicy: IfNotPresent
+  nuxeo:
+    mongodb:
+      deploy: false
+    elasticsearch:
+      deploy: false

@@ -10,3 +10,4 @@ dependencies:
 - alias: preview
   name: nuxeo-notification-stream
   repository: file://../nuxeo-notification-stream
+  version: 0.1.0-SNAPSHOT
