@@ -7,7 +7,10 @@ dependencies:
   name: exposecontroller
   repository: https://chartmuseum.build.cd.jenkins-x.io
   version: 2.3.56
+- alias: mongodb
+  version: 5.0.0
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  name: mongodb
 - alias: preview
   name: nuxeo-notification-stream
   repository: file://../nuxeo-notification-stream
-  version: 0.1.0-SNAPSHOT
