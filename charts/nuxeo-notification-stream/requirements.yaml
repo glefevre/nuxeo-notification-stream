@@ -2,8 +2,10 @@ dependencies:
 - alias: mongodb
   version: 5.0.0
   repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: nuxeo.mongodb.deploy
   name: mongodb
 - alias: elasticsearch
   version: 1.15.1
   repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: nuxeo.elasticsearch.deploy
   name: elasticsearch

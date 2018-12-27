@@ -14,13 +14,17 @@ data:
   {{- if .Values.nuxeo.custom_params }}
   {{ toYaml .Values.nuxeo.custom_params | indent 4 }}
   {{- end }}
+  {{- if .Values.nuxeo.mongodb.deploy }}
     nuxeo.templates=default,mongodb
     nuxeo.mongodb.server=mongodb://{{ .Release.Name }}-mongodb:27017
     nuxeo.mongodb.dbname={{ .Values.nuxeo.mongodb.dbname }}
+  {{- end }}
+  {{- if .Values.nuxeo.elasticsearch.deploy }}
     elasticsearch.client=RestClient
     elasticsearch.clusterName={{ .Values.nuxeo.elasticsearch.clusterName }}
     elasticsearch.addressList={{ .Release.Name }}-elasticsearch-client:9200
     elasticsearch.indexName={{ .Values.nuxeo.elasticsearch.indexName }}
+  {{- end }}
   init.sh: |
     #!/bin/sh
 
