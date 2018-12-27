@@ -22,8 +22,8 @@ preview:
     pullPolicy: IfNotPresent
   nuxeo:
     mongodb:
-      deploy: true
+        deploy: false
     elasticsearch:
-      deploy: false
+      deploy: true
 mongodb:
   usePassword: false
