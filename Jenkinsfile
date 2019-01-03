@@ -6,27 +6,40 @@ pipeline {
     ORG = 'glefevre'
     APP_NAME = 'nuxeo-notification-stream'
     CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
-    KS_CLUSTER = 'jx'
+    PREVIEW_VERSION = "0.0.0-SNAPSHOT-$BUILD_NUMBER"
   }
   stages {
-    stage('CI Build and push snapshot') {
+    stage('CI Build and push snapshot image') {
       when {
         branch 'feature-*'
-      }
-      environment {
-        PREVIEW_VERSION = "0.0.0-SNAPSHOT-$BUILD_NUMBER"
-        PREVIEW_NAMESPACE = "$APP_NAME-$BRANCH_NAME".toLowerCase()
-        HELM_RELEASE = "$PREVIEW_NAMESPACE".toLowerCase()
       }
       steps {
         container('maven') {
           sh "mvn install -DskipTests"
           sh "export VERSION=$PREVIEW_VERSION && skaffold build -f skaffold.yaml"
           sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION"
-          dir('charts/preview') {
-            sh "make preview"
-            sh "jx preview --app $APP_NAME --install-dependencies --dir ../.."
-          }
+        }
+      }
+    }
+    stage('Run FTests') {
+      when {
+        branch 'feature-*'
+      }
+      environment {
+        PREVIEW_NAMESPACE = "$APP_NAME-$BRANCH_NAME".toLowerCase()
+        HELM_RELEASE = "$PREVIEW_NAMESPACE".toLowerCase()
+      }
+      steps {
+        container('maven') {
+           dir('charts/preview') {
+             sh "make preview"
+             sh "jx preview --app $APP_NAME --dir ../.."
+           }
+           dir('nuxeo-notification-stream-ftests') {
+             sh "rm -fr node_modules || true"
+             sh "npm install --no-package-lock"
+             sh "npm run test --nuxeoUrl=http://nuxeo-notification-stream.jx-glefevre-nuxeo-notification-stream-pr-feature-jx.35.231.200.170.nip.io/nuxeo"
+           }
         }
       }
     }

@@ -24,6 +24,6 @@ preview:
     mongodb:
         deploy: false
     elasticsearch:
-      deploy: true
+      deploy: false
 mongodb:
   usePassword: false
