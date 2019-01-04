@@ -5,12 +5,13 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint test",
-    "test": "nuxeo-web-ui-ftest",
+    "test": "nuxeo-web-ui-ftest --report --screenshots",
     "pretest": "npm run lint",
     "test:dev": "nuxeo-web-ui-ftest --nuxeoUrl=http://localhost:8080/nuxeo",
     "pretest:dev": "npm run lint",
     "test:watch": "nuxeo-web-ui-ftest --nuxeoUrl=http://localhost:8080/nuxeo --tags=@watch",
-    "pretest:watch": "npm run lint"
+    "pretest:watch": "npm run lint",
+    "test:preview": "nuxeo-web-ui-ftest --nuxeoUrl=http://nuxeo-notification-stream.jx-glefevre-nuxeo-notification-stream-pr-feature-jx.35.231.200.170.nip.io/nuxeo"
   },
   "author": "Nuxeo",
   "license": "proprietary",

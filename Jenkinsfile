@@ -38,8 +38,8 @@ pipeline {
            dir('nuxeo-notification-stream-ftests') {
              sh "npm config set @nuxeo:registry http://nexus.jx.35.231.200.170.nip.io/repository/test-gildas/"
              sh "rm -fr node_modules || true"
-             sh "npm install --no-package-lock --verbose"
-             sh "npm run test --nuxeoUrl=http://nuxeo-notification-stream.jx-glefevre-nuxeo-notification-stream-pr-feature-jx.35.231.200.170.nip.io/nuxeo"
+             sh "npm install --no-package-lock"
+             sh "npm run test:preview"
            }
         }
       }
