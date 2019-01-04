@@ -3,13 +3,10 @@
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
-  "bin": {
-    "nuxeo-notification-stream-ftests": "./script/web-ui-ftest.js"
-  },
   "scripts": {
     "lint": "eslint test",
-    "test": "web-ui-ftest --nuxeoUrl=http://nuxeo-notification-stream.jx-glefevre-nuxeo-notification-stream-pr-feature-jx.35.231.200.170.nip.io/nuxeo",
-    "test:preview": "web-ui-ftest --nuxeoUrl=http://nuxeo-notification-stream.jx-glefevre-nuxeo-notification-stream-pr-feature-jx.35.231.200.170.nip.io/nuxeo"
+    "test": "nuxeo-web-ui-ftest --wdioConfig=wdio.conf.js --nuxeoUrl=http://nuxeo-notification-stream.jx-glefevre-nuxeo-notification-stream-pr-feature-jx.35.231.200.170.nip.io/nuxeo",
+    "test:preview": "nuxeo-web-ui-ftest --wdioConfig=wdio.conf.js --nuxeoUrl=http://nuxeo-notification-stream.jx-glefevre-nuxeo-notification-stream-pr-feature-jx.35.231.200.170.nip.io/nuxeo"
   },
   "author": "Nuxeo",
   "license": "proprietary",

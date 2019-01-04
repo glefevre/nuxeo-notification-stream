@@ -14,6 +14,8 @@ nuxeo:
     clusterName: elasticsearch
     indexName: nuxeo
     deploy: true
+  packages: nuxeo-web-ui
+  templates: default
   custom_params: |-
     ## add any other params that go into nuxeo.conf
 replicaCount: 1

@@ -27,8 +27,8 @@ switch (capability.browserName) {
       args: [
         '--no-sandbox',
         // '--auto-open-devtools-for-tabs',
-        // '--window-size=1920,1080',
-        // '--headless',
+        '--window-size=1920,1080',
+        '--headless',
       ],
     };
     if (process.env.BROWSER_BINARY) {

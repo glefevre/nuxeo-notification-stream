@@ -22,7 +22,7 @@ export default class UI extends BasePage {
       const locale = browser.execute(() => window.nuxeo.I18n.language || 'en');
       if (locale.value) {
         global.locale = locale.value;
-        moment.locale(global.locale);
+        // moment.locale(global.locale);
       }
     }
     return new UI('nuxeo-app');
