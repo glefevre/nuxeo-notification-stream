@@ -9,7 +9,7 @@ pipeline {
     PREVIEW_VERSION = "0.0.0-SNAPSHOT-$BUILD_NUMBER"
   }
   stages {
-    stage('CI Build and push snapshot image') {
+    /*stage('CI Build and push snapshot image') {
       when {
         branch 'feature-*'
       }
@@ -20,7 +20,7 @@ pipeline {
           sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION"
         }
       }
-    }
+    }*/
     stage('Run FTests') {
       when {
         branch 'feature-*'
@@ -31,10 +31,10 @@ pipeline {
       }
       steps {
         container('maven-nuxeo') {
-           dir('charts/preview') {
+           /*dir('charts/preview') {
              sh "make preview"
-             sh "jx preview --app $APP_NAME --dir ../.."
-           }
+             sh "jx preview --pull-secrets instance-clid --app $APP_NAME --dir ../.."
+           }*/
            dir('nuxeo-notification-stream-ftests') {
              sh "npm config set @nuxeo:registry http://nexus.jx.35.231.200.170.nip.io/repository/test-gildas/"
              sh "rm -fr node_modules || true"
