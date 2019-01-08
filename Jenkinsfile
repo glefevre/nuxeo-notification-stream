@@ -18,6 +18,15 @@ pipeline {
           sh "mvn install -DskipTests"
           sh "export VERSION=$PREVIEW_VERSION && skaffold build -f skaffold.yaml"
           sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION"
+
+          dir('charts/preview') {
+            sh "make preview"
+            sh "jx preview --pull-secrets instance-clid --app $APP_NAME --dir ../.."
+          }
+
+          script {
+            previewUrl = sh(script: "kubectl get ing --namespace jx-glefevre-nuxeo-notification-stream-pr-feature-jx | awk '{if (NR == 2) {print \$2}}'", returnStdout: true).trim()
+          }
         }
       }
     }
@@ -30,16 +39,13 @@ pipeline {
         HELM_RELEASE = "$PREVIEW_NAMESPACE".toLowerCase()
       }
       steps {
+        echo "${previewUrl}"
         container('maven-nuxeo') {
-           dir('charts/preview') {
-             sh "make preview"
-             sh "jx preview --pull-secrets instance-clid --app $APP_NAME --dir ../.."
-           }
            dir('nuxeo-notification-stream-ftests') {
              sh "npm config set @nuxeo:registry http://nexus.jx.35.231.200.170.nip.io/repository/test-gildas/"
              sh "rm -fr node_modules || true"
              sh "npm install --no-package-lock"
-             sh "npm run test:preview"
+             sh "npm run test -- --nuxeoUrl=http://${previewUrl}/nuxeo"
            }
         }
       }
