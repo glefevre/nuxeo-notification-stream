@@ -9,7 +9,7 @@ if (process.env.CUCUMBER_REPORT_PATH) {
 }
 
 const plugins = {};
-plugins[path.join(__dirname, 'wdio-shadow-plugin')] = {};
+plugins[path.join(__dirname, 'node_modules/@nuxeo/nuxeo-web-ui-ftest/wdio-shadow-plugin')] = {};
 
 const capability = {
   // maxInstances can get overwritten per capability. So if you have an in-house Selenium
