@@ -7,6 +7,7 @@ pipeline {
     APP_NAME = 'nuxeo-notification-stream'
     CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
     PREVIEW_VERSION = "0.0.0-SNAPSHOT-$BUILD_NUMBER"
+    PREVIEW_NAMESPACE = "$APP_NAME-$BRANCH_NAME".toLowerCase()
   }
   stages {
     stage('CI Build and push snapshot image') {
@@ -21,11 +22,11 @@ pipeline {
 
           dir('charts/preview') {
             sh "make preview"
-            sh "jx preview --pull-secrets instance-clid --app $APP_NAME --dir ../.."
+            sh "jx preview --pull-secrets instance-clid --app $APP_NAME --namespace $PREVIEW_NAMESPACE --dir ../.."
           }
 
           script {
-            previewUrl = sh(script: "kubectl get ing --namespace jx-glefevre-nuxeo-notification-stream-pr-feature-jx | awk '{if (NR == 2) {print \$2}}'", returnStdout: true).trim()
+            previewUrl = sh(script: "kubectl get ing --namespace $PREVIEW_NAMESPACE | awk '{if (NR == 2) {print \$2}}'", returnStdout: true).trim()
           }
         }
       }
@@ -35,7 +36,6 @@ pipeline {
         branch 'feature-*'
       }
       environment {
-        PREVIEW_NAMESPACE = "$APP_NAME-$BRANCH_NAME".toLowerCase()
         HELM_RELEASE = "$PREVIEW_NAMESPACE".toLowerCase()
       }
       steps {
