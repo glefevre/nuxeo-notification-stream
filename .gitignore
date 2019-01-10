@@ -30,3 +30,4 @@ tmp
 .zapierapprc
 *.lock
 charts/
+node_modules/
