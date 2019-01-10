@@ -1,3 +1,8 @@
+def list = []
+def DB_MONGO = "MongoDB"
+def DB_h2 = "H2"
+def DB_PGSQL = "PostgreSQL"
+
 pipeline {
   agent {
     label "builder-maven-nuxeo"
@@ -11,6 +16,23 @@ pipeline {
     // HELM_RELEASE = "$PREVIEW_NAMESPACE".toLowerCase()
   }
   stages {
+    stage('Get PR comment') {
+      when {
+        branch 'PR-*'
+      }
+      steps {
+        script {
+          def regex = /^- \[x\] ([a-zA-Z0-9]*)$/
+          def splitBody = pullRequest.body.split("\n")
+          for (line in splitBody) {
+            def group = (line =~ regex)
+            if (group) {
+              list.add(group[0][1])
+            }
+          }
+        }
+      }
+    }
     stage('Prepare test compile') {
       steps {
         container('maven-nuxeo') {
@@ -19,21 +41,55 @@ pipeline {
         }
       }
     }
-    stage('CI Build') {
-      steps {
-        container('maven-nuxeo') {
-          sh "mvn install -o"
-          sh "export VERSION=$PREVIEW_VERSION && skaffold build -f skaffold.yaml"
-          sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION"
+    stage('CI Build PR') {
+      when {
+        branch 'PR-*'
+      }
+      parallel {
+        stage('JUnit - Default') {
+          steps {
+            container('maven-nuxeo') {
+              // Run unit tests with H2
+              sh "mvn test -o -Dalt.build.dir=target-default"
+            }
+          }
+        }
+        stage('JUnit - MongoDB') {
+          when {
+            expression {
+              return list.contains(DB_MONGO)
+            }
+          }
+          steps {
+            container('maven-nuxeo') {
+              // Run unit tests with MongoDB
+              echo "Run unit tests with MongoDB"
+            }
+          }
+        }
+        stage('JUnit - PostgreSQL') {
+          when {
+            expression {
+              return list.contains(DB_PGSQL)
+            }
+          }
+          steps {
+            container('maven-nuxeo') {
+              // Run unit tests with PostgreSQL
+              echo "Run unit tests with PostgreSQL"
+            }
+          }
         }
       }
     }
     stage('Deploy Preview') {
       when {
-        branch 'feature-*'
+        branch 'PR-*'
       }
       steps {
         container('maven-nuxeo') {
+          sh "export VERSION=$PREVIEW_VERSION && skaffold build -f skaffold.yaml"
+          sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION"
           dir('charts/preview') {
             sh "make preview"
             sh "jx preview --pull-secrets instance-clid --app $APP_NAME --namespace $PREVIEW_NAMESPACE --dir ../.."
