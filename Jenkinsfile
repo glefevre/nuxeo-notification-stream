@@ -8,18 +8,32 @@ pipeline {
     CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
     PREVIEW_VERSION = "0.0.0-SNAPSHOT-$BUILD_NUMBER"
     PREVIEW_NAMESPACE = "$APP_NAME-$BRANCH_NAME".toLowerCase()
+    // HELM_RELEASE = "$PREVIEW_NAMESPACE".toLowerCase()
   }
   stages {
-    stage('CI Build and push snapshot image') {
+    stage('Prepare test compile') {
+      steps {
+        container('maven-nuxeo') {
+          // Load local Maven repository
+          sh "mvn package process-test-resources -DskipTests"
+        }
+      }
+    }
+    stage('CI Build') {
+      steps {
+        container('maven-nuxeo') {
+          sh "mvn install -o"
+          sh "export VERSION=$PREVIEW_VERSION && skaffold build -f skaffold.yaml"
+          sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION"
+        }
+      }
+    }
+    stage('Deploy Preview') {
       when {
         branch 'feature-*'
       }
       steps {
         container('maven-nuxeo') {
-          sh "mvn install -DskipTests"
-          sh "export VERSION=$PREVIEW_VERSION && skaffold build -f skaffold.yaml"
-          sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION"
-
           dir('charts/preview') {
             sh "make preview"
             sh "jx preview --pull-secrets instance-clid --app $APP_NAME --namespace $PREVIEW_NAMESPACE --dir ../.."
@@ -31,15 +45,11 @@ pipeline {
         }
       }
     }
-    stage('Run FTests') {
+    stage('Run FTests Against Preview') {
       when {
         branch 'feature-*'
       }
-      environment {
-        HELM_RELEASE = "$PREVIEW_NAMESPACE".toLowerCase()
-      }
       steps {
-        echo "${previewUrl}"
         container('maven-nuxeo') {
            dir('nuxeo-notification-stream-ftests') {
              sh "npm config set @nuxeo:registry http://nexus.jx.35.231.200.170.nip.io/repository/test-gildas/"
@@ -65,8 +75,8 @@ pipeline {
           // so we can retrieve the version in later steps
           sh "echo \$(jx-release-version) > VERSION"
           // sh "mvn versions:set -DnewVersion=\$(cat VERSION)"
-          // sh "jx step tag --version \$(cat VERSION)"
-          // sh "mvn clean deploy"
+          sh "jx step tag --version \$(cat VERSION)"
+          sh "mvn clean deploy"
           sh "export VERSION=`cat VERSION` && skaffold build -f skaffold.yaml"
           sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:\$(cat VERSION)"
         }
@@ -92,8 +102,8 @@ pipeline {
     }
   }
   post {
-        always {
-          cleanWs()
-        }
+    always {
+      cleanWs()
+    }
   }
 }
