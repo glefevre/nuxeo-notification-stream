@@ -1,0 +1,17 @@
+{
+  "name": "nuxeo-notification-stream-ftests",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint test",
+    "test": "nuxeo-web-ui-ftest --wdioConfig=jxwdio.conf.js",
+    "test:preview": "nuxeo-web-ui-ftest --wdioConfig=jxwdio.conf.js --nuxeoUrl=http://nuxeo-notification-stream.jx-glefevre-nuxeo-notification-stream-pr-feature-jx.35.231.200.170.nip.io/nuxeo"
+  },
+  "author": "Nuxeo",
+  "license": "proprietary",
+  "dependencies": {
+    "@nuxeo/nuxeo-web-ui-ftest": "2.4.0-SNAPSHOT",
+    "cucumber": "^4.1.0"
+  }
+}
